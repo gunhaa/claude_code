@@ -28,7 +28,7 @@ claude_code/
 │       ├── git.md             # Git 워크플로우 템플릿
 │       └── style.md           # 코드 스타일 템플릿
 │
-└── feedback/              # 실사용 중 발견한 팁 및 개선 사항
+└── feedback/              # 컨텍스트 압축 대비 피드백 루프용 (Agent 참조)
     └── lessons-learned.md
 ```
 
