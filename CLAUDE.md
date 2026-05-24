@@ -1,5 +1,24 @@
 # CLAUDE.md — 작업 지침
 
+## 이 저장소 구조
+
+```
+docs/        → Claude Code 동작 레퍼런스 (질문 후 저장, 커밋은 허가 후)
+tips/        → 영상 시리즈 치트시트 (basic / intermediate / advanced)
+boilerplate/ → 새 프로젝트 복사용 CLAUDE.md 템플릿
+feedback/    → 레거시 (컨텍스트 복원은 /memory 사용)
+```
+
+주요 docs 참조:
+- 워크플로우: @docs/claude-workflow.md
+- 단축키·명령어: @docs/claude-shortcuts.md
+- /memory 시스템: @docs/claude-memory.md
+- Skills: @docs/claude-skills.md
+- Sub-Agent: @docs/claude-agents.md
+- Hooks: @docs/claude-hooks.md
+
+---
+
 ## 문서화 규칙
 
 Claude Code의 동작, 기능, 설정에 관한 질문을 받으면:
