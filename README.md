@@ -74,6 +74,22 @@ cp -r boilerplate/. /path/to/new-project/
 
 ---
 
+## tips ↔ docs 매핑
+
+치트시트(tips/)의 각 주제가 어느 레퍼런스 문서(docs/)에 정리되어 있는지 보여줍니다.
+
+| tips 주제 | 관련 docs |
+|-----------|-----------|
+| **1_basic** — CLAUDE.md 계층 구조, 작성 원칙 | [claude-file-loading-order.md](docs/claude-file-loading-order.md) · [claude-md-tips.md](docs/claude-md-tips.md) |
+| **1_basic** — 단축키, 슬래시 명령어, 커스텀 명령어 | [claude-shortcuts.md](docs/claude-shortcuts.md) |
+| **2_intermediate** — /memory, Lazy Loading, MCP 토큰, Mermaid | [claude-memory.md](docs/claude-memory.md) |
+| **2_intermediate** — Plan Mode, TDD, WAT 프레임워크, TODO.md | [claude-workflow.md](docs/claude-workflow.md) |
+| **3_advanced** — Skills 시스템 | [claude-skills.md](docs/claude-skills.md) |
+| **3_advanced** — Sub-Agent, Git Worktree | [claude-agents.md](docs/claude-agents.md) |
+| **3_advanced** — Hooks, 로컬 Bash, 커스텀 MCP 서버 | [claude-hooks.md](docs/claude-hooks.md) |
+
+---
+
 ## docs 문서 목록
 
 | 문서 | 내용 |
