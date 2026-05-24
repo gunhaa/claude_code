@@ -143,6 +143,47 @@ Claude에게 `"check-db.sh 실행해"`라고 하면 됩니다. MCP 연결 불필
 
 ---
 
+## 커스텀 MCP 서버 빌드
+
+로컬 Bash 스크립트로 해결하기 어렵거나, Claude가 작업 중 **자동으로 호출**해야 하는 도구가 필요하면 커스텀 MCP 서버를 만드세요.
+
+**언제 MCP 서버를 만드는가**
+
+| 상황 | 권장 방식 |
+|------|-----------|
+| 단순 반복 명령 | 로컬 Bash 스크립트 |
+| 외부 API 연동 (Stripe, GitHub 등) | MCP 서버 |
+| Claude가 자동 판단해서 호출해야 하는 도구 | MCP 서버 |
+| 복잡한 상태 관리가 필요한 도구 | MCP 서버 |
+
+**예시: Plan Review MCP 서버**
+
+Plan Mode에서 계획을 세우면 Gemini API로 보내 리뷰를 받고 결과를 반환하는 서버입니다.
+
+```
+"Gemini API를 사용하는 plan-review MCP 서버를 만들어줘.
+ review_plan tool 하나만 있으면 돼.
+ plan 텍스트를 받아서 Gemini에 리뷰를 요청하고 결과를 반환하게."
+```
+
+Claude가 서버 코드 작성부터 `settings.json` 등록까지 도와줍니다.
+
+**MCP 서버 등록 위치**
+
+```json
+// ~/.claude/settings.json 또는 .claude/settings.json
+{
+  "mcpServers": {
+    "plan-review": {
+      "command": "node",
+      "args": ["/path/to/plan-review-server/index.js"]
+    }
+  }
+}
+```
+
+---
+
 ## Skills + Hooks 조합 패턴
 
 반복 작업 전체를 자동화하는 구조입니다.
