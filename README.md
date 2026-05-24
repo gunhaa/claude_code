@@ -73,8 +73,13 @@ cp -r boilerplate/. /path/to/new-project/
 | 문서 | 내용 |
 |------|------|
 | [claude-workflow.md](docs/claude-workflow.md) | 상황별 권장 워크플로우 |
+| [claude-shortcuts.md](docs/claude-shortcuts.md) | 단축키 & 슬래시 명령어 |
+| [claude-memory.md](docs/claude-memory.md) | /memory 시스템, Lazy Loading, MCP 토큰 관리 |
+| [claude-skills.md](docs/claude-skills.md) | Skills 시스템 (SKILL.md 작성법, 저장 위치) |
+| [claude-agents.md](docs/claude-agents.md) | Sub-Agent 시스템 (내장 5종, 커스텀, 패턴) |
+| [claude-hooks.md](docs/claude-hooks.md) | Hooks 자동화 (이벤트 타입, JSON 구조, 예시) |
 | [claude-models.md](docs/claude-models.md) | Claude 모델 ID, 특징, 선택 기준 |
-| [claude-cli.md](docs/claude-cli.md) | CLI 명령어 및 옵션 |
+| [claude-cli.md](docs/claude-cli.md) | CLI 옵션 레퍼런스 |
 | [claude-context.md](docs/claude-context.md) | 세션 컨텍스트 구성 요소 |
 | [claude-file-loading-order.md](docs/claude-file-loading-order.md) | CLAUDE.md 로드 순서 |
 | [claude-vs-readme.md](docs/claude-vs-readme.md) | CLAUDE.md vs README.md 비교 |
