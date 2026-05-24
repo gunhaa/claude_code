@@ -12,27 +12,33 @@ claude_code/
 ├── CLAUDE.md              # 이 저장소에 대한 Claude 작업 지침
 ├── README.md              # 이 파일
 │
-├── docs/                  # Claude Code 동작 및 설정 레퍼런스 문서
-│   ├── claude-models.md           # Claude 모델 종류 및 ID 정리
-│   ├── claude-cli.md              # Claude CLI 명령어 레퍼런스
-│   ├── claude-context.md          # 세션 컨텍스트 구성 요소 정리
-│   ├── claude-file-loading-order.md  # CLAUDE.md 로드 순서 및 계층 구조
-│   ├── claude-vs-readme.md        # CLAUDE.md vs README.md 비교
-│   └── claude-md-tips.md          # 효과적인 CLAUDE.md 작성 팁
+├── docs/                  # Claude Code 레퍼런스 문서
+│   ├── claude-workflow.md            # 상황별 권장 워크플로우
+│   ├── claude-shortcuts.md           # 단축키 & 슬래시 명령어
+│   ├── claude-memory.md              # /memory 시스템, Lazy Loading
+│   ├── claude-skills.md              # Skills 시스템
+│   ├── claude-agents.md              # Sub-Agent 시스템
+│   ├── claude-hooks.md               # Hooks 자동화
+│   ├── claude-models.md              # Claude 모델 ID 및 선택 기준
+│   ├── claude-cli.md                 # CLI 옵션 레퍼런스
+│   ├── claude-context.md             # 세션 컨텍스트 구성 요소
+│   ├── claude-file-loading-order.md  # CLAUDE.md 로드 순서
+│   ├── claude-vs-readme.md           # CLAUDE.md vs README.md 비교
+│   └── claude-md-tips.md             # 효과적인 CLAUDE.md 작성 팁
+│
+├── tips/                  # 영상 시리즈 치트시트
+│   ├── README.md
+│   ├── 1_basic.md         # 입문: 초기 설정, 단축키, 슬래시 명령어
+│   ├── 2_intermediate.md  # 중급: 컨텍스트 관리, TDD 워크플로우, /memory
+│   └── 3_advanced.md      # 고급: Skills, Sub-Agent, Hooks, 자동화
 │
 ├── boilerplate/           # 새 프로젝트 시작 시 복사할 템플릿
-│   ├── CLAUDE.md              # 항목만 있는 메인 지침 템플릿
-│   ├── CLAUDE.local.md        # 개인 설정 템플릿 (gitignore 권장)
+│   ├── CLAUDE.md              # 메인 지침 템플릿 (필수 명령어, 아키텍처 등)
+│   ├── CLAUDE.local.md        # 개인 설정 템플릿 (.gitignore 권장)
 │   └── .claude/rules/
-│       ├── testing.md         # 테스트 규칙 템플릿
-│       ├── git.md             # Git 워크플로우 템플릿
-│       └── style.md           # 코드 스타일 템플릿
-│
-├── tips/                  # 영상 시리즈 치트시트 (basic / intermediate / advanced)
-│   ├── README.md
-│   ├── basic.md
-│   ├── intermediate.md
-│   └── advanced.md
+│       ├── testing.md         # TDD 방법론, 린트 규칙, Mock 기준
+│       ├── git.md             # Conventional Commits, 브랜치 전략
+│       └── style.md           # 네이밍, 포맷터, 코드 품질 기준
 │
 └── feedback/              # 레거시. 컨텍스트 복원은 /memory 시스템 사용
     └── lessons-learned.md
