@@ -28,7 +28,13 @@ claude_code/
 │       ├── git.md             # Git 워크플로우 템플릿
 │       └── style.md           # 코드 스타일 템플릿
 │
-└── feedback/              # 컨텍스트 압축 대비 피드백 루프용 (Agent 참조)
+├── tips/                  # 영상 시리즈 치트시트 (basic / intermediate / advanced)
+│   ├── README.md
+│   ├── basic.md
+│   ├── intermediate.md
+│   └── advanced.md
+│
+└── feedback/              # 레거시. 컨텍스트 복원은 /memory 시스템 사용
     └── lessons-learned.md
 ```
 
@@ -47,10 +53,26 @@ cp -r boilerplate/. /path/to/new-project/
 
 ---
 
+## 권장 워크플로우
+
+상황별 워크플로우 요약입니다. 상세 내용은 [docs/claude-workflow.md](docs/claude-workflow.md)를 참고하세요.
+
+| 상황 | 워크플로우 |
+|------|-----------|
+| 단순 기능 하나 추가 | Plan Mode → 작은 변경 → 테스트 → 커밋 반복 |
+| 컨텍스트가 불어남 | `/compact` 또는 `/clear` + **한 세션 = 한 피처** 원칙 |
+| 할 일이 많고 며칠에 걸침 | 프로젝트 루트에 `TODO.md` 작성 후 세션마다 업데이트 |
+| 복잡한 멀티 모듈 작업 | WAT 프레임워크 — Workflow 글로 정의 → Sub-Agent 병렬 → 원자적 도구 |
+| 반복 작업 자동화 | `.claude/skills/`에 SKILL.md 작성 + Hooks로 이벤트 연결 |
+| 여러 기능 동시 개발 | `claude -w <branch>` Git Worktree 병렬 인스턴스 |
+
+---
+
 ## docs 문서 목록
 
 | 문서 | 내용 |
 |------|------|
+| [claude-workflow.md](docs/claude-workflow.md) | 상황별 권장 워크플로우 |
 | [claude-models.md](docs/claude-models.md) | Claude 모델 ID, 특징, 선택 기준 |
 | [claude-cli.md](docs/claude-cli.md) | CLI 명령어 및 옵션 |
 | [claude-context.md](docs/claude-context.md) | 세션 컨텍스트 구성 요소 |
