@@ -71,6 +71,7 @@ cp -r boilerplate/. /path/to/new-project/
 | 복잡한 멀티 모듈 작업 | WAT 프레임워크 — Workflow 글로 정의 → Sub-Agent 병렬 → 원자적 도구 |
 | 반복 작업 자동화 | `.claude/skills/`에 SKILL.md 작성 + Hooks로 이벤트 연결 |
 | 여러 기능 동시 개발 | `claude -w <branch>` Git Worktree 병렬 인스턴스 |
+| 외부 하네스 도입 검토 / 프롬프트 로깅 | superpowers · oh-my-claudecode vs 내장 기능 비교 → [섹션 8](docs/claude-workflow.md) |
 
 ---
 
@@ -87,6 +88,7 @@ cp -r boilerplate/. /path/to/new-project/
 | **3_advanced** — Skills 시스템 | [claude-skills.md](docs/claude-skills.md) |
 | **3_advanced** — Sub-Agent, Git Worktree | [claude-agents.md](docs/claude-agents.md) |
 | **3_advanced** — Hooks, 로컬 Bash, 커스텀 MCP 서버 | [claude-hooks.md](docs/claude-hooks.md) |
+| **보충** — 외부 하네스 비교 (superpowers · oh-my-claudecode) + 로깅 hook 직접 구현 | [claude-workflow.md §8](docs/claude-workflow.md) |
 
 ---
 
