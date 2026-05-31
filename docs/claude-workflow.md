@@ -222,6 +222,134 @@ claude -w feature-auth      # worktree 생성 + 브랜치 체크아웃 + 세션 
 
 ---
 
+## 8. 외부 하네스 vs 내장 기능 — 비교와 직접 구현
+
+Claude Code 생태계에는 `superpowers`, `oh-my-claudecode` 같은 외부 하네스(플러그인)가 빠르게 늘고 있습니다. 내장 기능과 무엇이 다른지, 언제 외부 하네스로 갈아탈 가치가 있는지를 정리하고, 둘 다 커버하지 못하는 **프롬프트 로깅**은 직접 hook으로 구현합니다.
+
+### 8.1 Plan: 내장 Plan Mode vs `superpowers`
+
+**설치·사용법**
+
+| 방식 | 설치 | 호출 |
+|------|------|------|
+| 내장 Plan Mode | 별도 설치 없음 | `Shift+Tab`으로 모드 전환 |
+| `superpowers` | `/plugin install superpowers@claude-plugins-official` | description 매칭으로 **자동 트리거** (수동 `/` 호출 불필요) |
+
+> MD 파일을 `.claude/skills/`에 손으로 복붙할 필요는 없습니다. 플러그인 마켓플레이스에서 한 번 설치하면 `brainstorming`, `writing-plans`, `executing-plans` 등 모든 skill이 자동 등록되고, "계획 세워줘" / "구현해줘" 같은 표현이 감지되면 알아서 실행됩니다.
+
+**비교**
+
+| 특성 | 내장 Plan Mode | superpowers |
+|------|---------------|-------------|
+| 본질 | 권한 모드 (수정 차단, 안전 탐색) | 프로세스 (Socratic 질문 → 단계별 계획) |
+| 산출물 | 휘발성 plan (세션 종료 시 소실) | `docs/plans/`에 영구 마크다운 |
+| 실행 | 1회 승인 후 끝까지 진행 | 3 작업마다 사람 체크포인트 |
+| 토큰 부담 | 0 | 평소 ~수백B (설명만), 트리거 시 본문 로드 |
+| 트리거 | 수동 (`Shift+Tab`) | 자동 (description 키워드 매칭) |
+
+**우위 판단**
+
+- "그냥 신중하게만 가고 싶다" → **내장 Plan Mode** (설정 0, 무료)
+- "설계 자체를 다듬고, 결정 근거를 문서로 남기고 싶다" → **superpowers**
+- 둘은 **보완 관계**: superpowers로 brainstorming/plan 작성 → 내장 Plan Mode로 실행 단계 안전 검토
+
+### 8.2 Agent: 내장 `/agents` vs `oh-my-claudecode` (OMC)
+
+**설치·사용법**
+
+| 방식 | 설치 | 호출 |
+|------|------|------|
+| 내장 Sub-Agent | `/agents` 또는 `.claude/agents/<name>.md` 작성 | 메인 Claude가 Task 도구로 자동 호출 |
+| OMC | `/plugin install oh-my-claudecode` 또는 `npm i -g oh-my-claude-sisyphus@latest` | tmux 안에서 `omc` 실행, `omc teleport`로 worktree 관리 |
+
+OMC는 **tmux 세션과 codex/gemini CLI가 미리 설치**되어 있어야 동작합니다. 단순한 MD 한 장으로 끝나지 않습니다.
+
+**비교**
+
+| 특성 | 내장 Sub-Agent | oh-my-claudecode |
+|------|--------------|-----------------|
+| 모델 | Claude 단일 | Claude + Gemini + Codex (멀티 모델) |
+| 실행 환경 | 메인 세션 안 격리 컨텍스트 | tmux pane + git worktree 격리 |
+| 병렬도 | 보통 동시 ~3개 | 19 agents / 36 skills 대규모 오케스트레이션 |
+| 의존성 | 없음 | tmux + codex CLI + gemini CLI + npm |
+| 비용 | 단일 모델 토큰 | 모델 조합으로 30~50% 절감 사례 보고 |
+
+**우위 판단**
+
+- "한 가지 보조 작업만 위임" → **내장 Sub-Agent** (설정 0, 즉시 사용)
+- "여러 기능을 진짜 동시에 개발 + 비용 절감" → **OMC**
+- **함정**: OMC는 tmux/외부 CLI 설치·계정·키 세팅 부담이 큽니다. 1인 개발자의 단순 작업엔 과투자가 됩니다.
+
+### 8.3 직접 구현: 프롬프트·응답 로깅 Hook
+
+외부 하네스가 커버하지 않는 영역입니다. **사용자가 보낸 프롬프트와 Claude의 최종 응답을 JSONL로 누적**해두면, 나중에 작업 회고·디버깅·프롬프트 품질 분석에 바로 쓸 수 있습니다.
+
+**구성**
+
+| 파일 | 트리거 | 역할 |
+|------|--------|------|
+| `~/.claude/hooks/log-prompt.sh` | `UserPromptSubmit` | stdin JSON에서 `prompt` 추출 후 `~/.claude/logs/prompts.jsonl`에 append |
+| `~/.claude/hooks/log-response.sh` | `Stop` | `transcript_path`의 마지막 assistant 메시지를 읽어 같은 파일에 append |
+| `~/.claude/settings.json` | — | 두 hook을 등록 |
+
+**hook 입력 페이로드 (공식 문서 기준)**
+
+- `UserPromptSubmit`: `session_id`, `transcript_path`, `cwd`, `permission_mode`, `hook_event_name`, **`prompt`**
+- `Stop`: 위 공통 필드 + `effort.level`. **응답 본문은 페이로드에 없음** → `transcript_path` JSONL에서 마지막 `assistant` 항목을 직접 파싱해야 합니다.
+
+**`log-prompt.sh`**
+
+```bash
+#!/usr/bin/env bash
+INPUT=$(cat)
+TS=$(date -u +%FT%TZ)
+mkdir -p ~/.claude/logs
+echo "$INPUT" | jq -c --arg ts "$TS" '{
+  ts: $ts, kind: "prompt",
+  session_id, cwd, prompt
+}' >> ~/.claude/logs/prompts.jsonl
+```
+
+**`log-response.sh`**
+
+```bash
+#!/usr/bin/env bash
+INPUT=$(cat)
+TS=$(date -u +%FT%TZ)
+TRANSCRIPT=$(echo "$INPUT" | jq -r '.transcript_path')
+LAST=$(tac "$TRANSCRIPT" | jq -c 'select(.type=="assistant")' | head -1)
+echo "$INPUT" | jq -c --arg ts "$TS" --argjson last "$LAST" '{
+  ts: $ts, kind: "response",
+  session_id, last_message: $last
+}' >> ~/.claude/logs/prompts.jsonl
+```
+
+`chmod +x ~/.claude/hooks/log-*.sh` 로 실행 권한을 줍니다.
+
+**`~/.claude/settings.json` 등록**
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "~/.claude/hooks/log-prompt.sh" }] }
+    ],
+    "Stop": [
+      { "matcher": "*", "hooks": [{ "type": "command", "command": "~/.claude/hooks/log-response.sh" }] }
+    ]
+  }
+}
+```
+
+**주의사항**
+
+- hook은 동기 실행입니다. 무거운 후처리는 백그라운드(`&`)로 분리하세요.
+- `prompts.jsonl`에 민감 정보(토큰·비밀번호·내부 코드)가 그대로 적힐 수 있습니다. **`.gitignore`로 `~/.claude/logs/` 보호** 또는 마스킹 스크립트 추가가 필수입니다.
+- `jq`가 필요합니다 (`brew install jq`).
+- 스크립트는 반드시 **종료 코드 0**으로 끝내야 합니다 (비-0 반환 시 Claude 측 동작에 영향).
+
+---
+
 ## 빠른 참조 — 상황별 워크플로우 선택
 
 | 상황 | 추천 워크플로우 |
@@ -233,3 +361,4 @@ claude -w feature-auth      # worktree 생성 + 브랜치 체크아웃 + 세션 
 | 반복 작업 자동화 필요 | Skills + Hooks 파이프라인 (섹션 5) |
 | 여러 기능 동시 개발 | Git Worktree (섹션 6) |
 | 에러 디버깅 | 섹션 7 |
+| 외부 하네스 도입 검토 / 프롬프트 로깅 자동화 | 외부 하네스 vs 내장 (섹션 8) |
