@@ -1,5 +1,2 @@
 .claude/
-!boilerplate/.claude/
-!boilerplate/.claude/**
-!boilerplate/agentic-workflow/.claude/
-!boilerplate/agentic-workflow/.claude/**
+!boilerplate/**
